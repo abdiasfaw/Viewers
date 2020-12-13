@@ -1,15 +1,16 @@
 import React from 'react';
-
 import init from './init.js';
 import sopClassHandlerModule from './OHIFDicomRTStructSopClassHandler';
 import id from './id.js';
 import RTPanel from './components/RTPanel/RTPanel';
+import { version } from '../package.json';
 
 export default {
   /**
    * Only required property. Should be a unique value across all extensions.
    */
   id,
+  version,
 
   /**
    *
@@ -21,19 +22,8 @@ export default {
     init({ servicesManager, configuration });
   },
   getPanelModule({ commandsManager, servicesManager, api }) {
-    const { UINotificationService } = servicesManager.services;
-
     const ExtendedRTPanel = props => {
       const { activeContexts } = api.hooks.useAppContext();
-
-      const noContoursNotificationHandler = () => {
-        UINotificationService.show({
-          title: 'ROI Contour empty',
-          message: 'The ROI contour has no structure set data.',
-          type: 'error',
-          autoClose: false,
-        });
-      };
 
       const contourItemClickHandler = contourData => {
         commandsManager.runCommand('jumpToImage', contourData);
@@ -45,7 +35,6 @@ export default {
           onContourItemClick={contourItemClickHandler}
           activeContexts={activeContexts}
           contexts={api.contexts}
-          noContoursNotification={noContoursNotificationHandler}
         />
       );
     };
